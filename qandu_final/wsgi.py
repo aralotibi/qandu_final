@@ -1,5 +1,5 @@
 """
-WSGI config for qandu_app project.
+WSGI config for qandu_final project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -13,7 +13,7 @@ from django.core.wsgi import get_wsgi_application
 from dj_static import Cling
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qandu_app.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qandu_final.settings")
 
 application = Cling(get_wsgi_application())
 

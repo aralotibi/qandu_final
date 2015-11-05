@@ -10,13 +10,13 @@
 
 <p><a href="{% url 'user_delete' slug=user.username %}">Delete account</a></p>
 {% endif %}
-<h3>Questions ({{ questions.count }})</h3>
-{% for question in questions %}
-<p><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></p>
+<h3>Schools ({{ schools.count }})</h3>
+{% for school in schools %}
+<p><a href="{{ school.get_absolute_url }}">{{ school.title }}</a></p>
 {% endfor %}
-<h3>Answers ({{ answers.count }})</h3>
-{% for answer in answers %}
-<p><a href="{{ answer.question.get_absolute_url }}">{{ answer.question.title  }}</a></p>
-<p>> {{ answer.text }}</p>
+<h3>Reviews ({{ reviews.count }})</h3>
+{% for review in reviews %}
+<p><a href="{{ review.school.get_absolute_url }}">{{ review.school.title  }}</a></p>
+<p>> {{ review.text }}</p>
 {% endfor %}
 {% endblock %}

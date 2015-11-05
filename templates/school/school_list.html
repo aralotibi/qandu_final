@@ -1,18 +1,18 @@
 
 {% extends 'base.html' %}
 {% block content %}
-{% for question in object_list %}
+{% for school in object_list %}
 <div class="panel">
 
-   <h3><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></h3>
-   <p>Asked by <a href="{% url 'user_detail' slug=question.user.username %}">{{ question.user.username }}</a> on {{ question.created_at }}</p>
+   <h3><a href="{{ school.get_absolute_url }}">{{ school.title }}</a></h3>
+   <p>Asked by <a href="{% url 'user_detail' slug=school.user.username %}">{{ school.user.username }}</a> on {{ school.created_at }}</p>
    <form method="post" action="{% url 'vote' %}">
-    <span class="badge">{{ question.answer_set.all.count }} Answer{{  question.answer_set.all.count|pluralize }}</span>
-    <span class="badge">{{ question.vote_set.all.count }} Vote{{ question.vote_set.all.count|pluralize }}</span>
+    <span class="badge">{{ school.review_set.all.count }} Review{{  school.review_set.all.count|pluralize }}</span>
+    <span class="badge">{{ school.vote_set.all.count }} Vote{{ school.vote_set.all.count|pluralize }}</span>
     {% csrf_token %}
-    <input type="hidden" name="question" value="{{ question.id }}" />
+    <input type="hidden" name="school" value="{{ school.id }}" />
     <input type="hidden" name="user" value="{{ user.id }}" />
-        {% if question in user_votes %}
+        {% if school in user_votes %}
         <button class="btn btn-link">
           <span class="glyphicon glyphicon-thumbs-down"></span>
         </button>

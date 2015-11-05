@@ -14,106 +14,106 @@ from .forms import *
 class Home(TemplateView):
     template_name = "home.html"
 
-class QuestionCreateView(CreateView):
-    model = Question
-    template_name = "question/question_form.html"
+class SchoolCreateView(CreateView):
+    model = School
+    template_name = "school/school_form.html"
     fields = ['title', 'description']
-    success_url = reverse_lazy('question_list')
+    success_url = reverse_lazy('school_list')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(QuestionCreateView, self).form_valid(form)
+        return super(SchoolCreateView, self).form_valid(form)
 
-class QuestionListView(ListView):
-    model = Question
-    template_name = 'question/question_list.html'
+class SchoolListView(ListView):
+    model = School
+    template_name = 'school/school_list.html'
     paginate_by = 5
 
     def get_context_data(self, **kwargs):
-        context = super(QuestionListView, self).get_context_data(**kwargs)
-        user_votes = Question.objects.filter(vote__user=self.request.user)
+        context = super(SchoolListView, self).get_context_data(**kwargs)
+        user_votes = School.objects.filter(vote__user=self.request.user)
         context['user_votes'] = user_votes
         return context
 
-class QuestionDetailView(DetailView):
-    model = Question
-    template_name = 'question/question_detail.html'
+class SchoolDetailView(DetailView):
+    model = School
+    template_name = 'school/school_detail.html'
 
     def get_context_data(self, **kwargs):
-        context = super (QuestionDetailView, self).get_context_data(**kwargs)
-        question = Question.objects.get(id=self.kwargs['pk'])
-        answers = Answer.objects.filter(question=question)
-        context['answers'] = answers
-        user_answers = Answer.objects.filter(question=question, user=self.request.user)
-        context['user_answers'] = user_answers
-        user_votes = Answer.objects.filter(vote__user=self.request.user)
+        context = super (SchoolDetailView, self).get_context_data(**kwargs)
+        school = School.objects.get(id=self.kwargs['pk'])
+        reviews = Review.objects.filter(school=school)
+        context['reviews'] = reviews
+        user_reviews = Review.objects.filter(school=school, user=self.request.user)
+        context['user_reviews'] = user_reviews
+        user_votes = Review.objects.filter(vote__user=self.request.user)
         context['user_votes'] = user_votes
         return context
 
-class QuestionUpdateView(UpdateView):
-    model = Question
-    template_name = 'question/question_form.html'
+class SchoolUpdateView(UpdateView):
+    model = School
+    template_name = 'school/school_form.html'
     fields = ['title', 'description']
 
     def get_object(self, *args, **kwargs):
-          object = super(QuestionUpdateView, self).get_object(*args, **kwargs)
+          object = super(SchoolUpdateView, self).get_object(*args, **kwargs)
           if object.user != self.request.user:
               raise PermissionDenied()
           return object
 
-class QuestionDeleteView(DeleteView):
-    model = Question
-    template_name = 'question/question_confirm_delete.html'
-    success_url = reverse_lazy('question_list')
+class SchoolDeleteView(DeleteView):
+    model = School
+    template_name = 'school/school_confirm_delete.html'
+    success_url = reverse_lazy('school_list')
 
     def get_object(self, *args, **kwargs):
-          object = super(QuestionDeleteView, self).get_object(*args, **kwargs)
+          object = super(SchoolDeleteView, self).get_object(*args, **kwargs)
           if object.user != self.request.user:
               raise PermissionDenied()
           return object
 
-class AnswerCreateView(CreateView):
-    model = Answer
-    template_name = "answer/answer_form.html"
+class ReviewCreateView(CreateView):
+    model = Review
+    template_name = "review/review_form.html"
     fields = ['text']
 
     def get_success_url(self):
-        return self.object.question.get_absolute_url()
+        return self.object.school.get_absolute_url()
 
     def form_valid(self, form):
-          question = Question.objects.get(id=self.kwargs['pk'])
-          if Answer.objects.filter(question=question, user=self.request.user).exists():
+          school = School.objects.get(id=self.kwargs['pk'])
+          if Review.objects.filter(school=school, user=self.request.user).exists():
             raise PermissionDenied()
           form.instance.user = self.request.user
-          form.instance.question = Question.objects.get(id=self.kwargs['pk'])
-          return super(AnswerCreateView, self).form_valid(form)
+          form.instance.school = School.objects.get(id=self.kwargs['pk'])
+          return super(ReviewCreateView, self).form_valid(form)
 
-class AnswerUpdateView(UpdateView):
-    model = Answer
-    pk_url_kwarg = 'answer_pk'
-    template_name = 'answer/answer_form.html'
+class ReviewUpdateView(UpdateView):
+    model = Review
+    pk_url_kwarg = 'review_pk'
+    template_name = 'review/review_form.html'
     fields = ['text']
 
     def get_success_url(self):
-        return self.object.question.get_absolute_url()
+        return self.object.school.get_absolute_url()
 
         def get_object(self, *args, **kwargs):
-          object = super(AnswerUpdateView, self).get_object(*args, **kwargs)
+          object = super(ReviewUpdateView, self).get_object(*args, **kwargs)
           if object.user != self.request.user:
               raise PermissionDenied()
           return object
 
 
 
-class AnswerDeleteView(DeleteView):
-    model = Answer
-    pk_url_kwarg = 'answer_pk'
-    template_name = 'answer/answer_confirm_delete.html'
+class ReviewDeleteView(DeleteView):
+    model = Review
+    pk_url_kwarg = 'review_pk'
+    template_name = 'review/review_confirm_delete.html'
 
     def get_success_url(self):
-        return self.object.question.get_absolute_url()
+        return self.object.school.get_absolute_url()
     def get_object(self, *args, **kwargs):
-          object = super(AnswerDeleteView, self).get_object(*args, **kwargs)
+          object = super(ReviewDeleteView, self).get_object(*args, **kwargs)
           if object.user != self.request.user:
             raise PermissionDenied()
             return
@@ -123,24 +123,24 @@ class VoteFormView(FormView):
 
     def form_valid(self, form):
       user = self.request.user
-      question = Question.objects.get(pk=form.data["question"])
+      school = School.objects.get(pk=form.data["school"])
       try:
-        answer = Answer.objects.get(pk=form.data["answer"])
-        prev_votes = Vote.objects.filter(user=user, answer=answer)
+        review = Review.objects.get(pk=form.data["review"])
+        prev_votes = Vote.objects.filter(user=user, review=review)
         has_voted = (prev_votes.count()>0)
         if not has_voted:
-            Vote.objects.create(user=user, answer=answer)
+            Vote.objects.create(user=user, review=review)
         else:
             prev_votes[0].delete()
-        return redirect(reverse('question_detail', args=[form.data["question"]]))
+        return redirect(reverse('school_detail', args=[form.data["school"]]))
       except:
-        prev_votes = Vote.objects.filter(user=user, question=question)
+        prev_votes = Vote.objects.filter(user=user, school=school)
         has_voted = (prev_votes.count()>0)
         if not has_voted:
-            Vote.objects.create(user=user, question=question)
+            Vote.objects.create(user=user, school=school)
         else:
             prev_votes[0].delete()
-      return redirect('question_list')
+      return redirect('school_list')
 
 class UserDetailView(DetailView):
     model = User
@@ -151,10 +151,10 @@ class UserDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
         user_in_view = User.objects.get(username=self.kwargs['slug'])
-        questions = Question.objects.filter(user=user_in_view)
-        context['questions'] = questions
-        answers = Answer.objects.filter(user=user_in_view)
-        context['answers'] = answers
+        schools = School.objects.filter(user=user_in_view)
+        context['schools'] = schools
+        reviews = Review.objects.filter(user=user_in_view)
+        context['reviews'] = reviews
         return context
 
 
@@ -195,9 +195,9 @@ class UserDeleteView(DeleteView):
         return redirect(self.get_success_url())
 
 
-class SearchQuestionListView(QuestionListView):
+class SearchSchoolListView(SchoolListView):
     def get_queryset(self):
         incoming_query_string = self.request.GET.get('query','')
-        return Question.objects.filter(title__icontains=incoming_query_string)
+        return School.objects.filter(title__icontains=incoming_query_string)
 
 
