@@ -36,7 +36,7 @@ class Review(models.Model):
 
 class Vote(models.Model):
     user = models.ForeignKey(User)
-    school = models.ForeignKey(school, blank=True, null=True)
+    school = models.ForeignKey(School, blank=True, null=True)
     Review = models.ForeignKey(Review, blank=True, null=True)
 
     def __unicode__(self):

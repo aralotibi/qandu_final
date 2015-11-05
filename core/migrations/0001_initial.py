@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Answer',
+            name='Review',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Question',
+            name='School',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=300)),
@@ -36,18 +36,18 @@ class Migration(migrations.Migration):
             name='Vote',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('answer', models.ForeignKey(blank=True, to='core.Answer', null=True)),
-                ('question', models.ForeignKey(blank=True, to='core.Question', null=True)),
+                ('review', models.ForeignKey(blank=True, to='core.Review', null=True)),
+                ('school', models.ForeignKey(blank=True, to='core.School', null=True)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
-            model_name='answer',
-            name='question',
-            field=models.ForeignKey(to='core.Question'),
+            model_name='review',
+            name='school',
+            field=models.ForeignKey(to='core.School'),
         ),
         migrations.AddField(
-            model_name='answer',
+            model_name='review',
             name='user',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
         ),
