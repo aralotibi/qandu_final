@@ -9,16 +9,15 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('core', '0002_review'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='School',
+            name='Vote',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('title', models.CharField(max_length=300)),
-                ('description', models.TextField(null=True, blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('school', models.ForeignKey(to='core.School')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
